@@ -16,12 +16,16 @@ spec:
     spec:
       containers:
       - name: todos-container
-        image: 1701002/todos-json-server:v1.01
+        image: 1701002/todos-json-server:v1.02
         ports:
           - containerPort: 3000
         volumeMounts:
           - name: todos-data
-            mountPath: /usr/src/app/shared # check if the json file will be overwritten to null
+            # the file must pre-exist in the location so it can be read by the json server
+            # start the json server with `json-server shared/todos.json`
+            # at first run, the shared dir will be empty
+            # enter the pod and create an init file then switch from data/todos.json to shared/todos.json
+            mountPath: /usr/src/app/shared
       volumes:
         - name: todos-data
           persistentVolumeClaim:
