@@ -1,0 +1,10 @@
+# storage class for todos
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: todos-sc
+provisioner: rancher.io/local-path # GPT-Explained
+reclaimPolicy: Retain # retain data across PVC deletion
+#  Delays volume binding until a pod is scheduled, ensuring the volume is bound to a node where the pod will run.
+# not sure of data consistency with Pods replication
+volumeBindingMode: WaitForFirstConsumer

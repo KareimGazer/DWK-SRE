@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: todos-container
+        image: 1701002/todos-json-server:v1.01
+        ports:
+          - containerPort: 3000
+        volumeMounts:
+          - name: todos-data
+            mountPath: /usr/src/app/shared # check if the json file will be overwritten to null
+      volumes:
+        - name: todos-data
+          persistentVolumeClaim:
+            claimName: todos-pvc
+---
+# the associated service
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: ClusterIP
+  selector:
+    app: backend
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 3000
+---
+# the associated volume claim
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: todos-pvc
+spec:
+  storageClassName: todos-sc
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem # not sure if needed
+  resources:
+    requests:
+      storage: 500Mi
