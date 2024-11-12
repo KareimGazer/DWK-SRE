@@ -58,3 +58,14 @@ spec:
   resources:
     requests:
       storage: 500Mi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  PORT: "3000"
+  DB_URL: 'postgres:5432'
+  POSTGRES_PASSWORD: 'admin'
+  POSTGRES_USER: 'admin'
+  POSTGRES_DB: 'todos'
